@@ -55,3 +55,36 @@
 ; 11
 (assert
  (= {:a 1, :b 2, :c 3} (conj {:a 1} [:b 2] [:c 3])))
+
+;12
+(assert
+ (= 3 (first '(3 2 1))))
+
+(assert
+ (= 3 (second [2 3 4])))
+
+(assert
+ (= 3 (last (list 1 2 3))))
+
+;13
+(assert
+ (= [20 30 40] (rest [10 20 30 40])))
+
+(assert
+ (= '(20 30 40) (rest [10 20 30 40])))
+
+;14
+(assert
+ (= 8 ((fn add-five [x] (+ x 5)) 3)))
+ 
+(assert
+ (= 8 ((fn [x] (+ x 5)) 3)))
+
+(assert
+ (= 8 (#(+ % 5) 3)))
+
+(assert
+ (= 8 ((partial + 5) 3)))
+
+; 15
+
