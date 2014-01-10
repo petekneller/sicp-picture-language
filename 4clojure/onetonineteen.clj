@@ -101,10 +101,10 @@
  
 ;16 - Hello world
 (assert
- (= ((fn [s] (str "Hello, " s "!")) "Dave") "Hello Dave!"))
+ (= ((fn [s] (str "Hello, " s "!")) "Dave") "Hello, Dave!"))
 
 (assert
- (= (#(str "Hello, " % /!) "Dave") "Hello Dave!"))
+ (= (#(str "Hello, " % "!") "Dave") "Hello, Dave!"))
 
 ;17 - Sequences: map
 (assert
@@ -123,3 +123,24 @@
 
 (assert
  (= (#(first (reverse %)) '(5 4 3)) 3))
+
+;20 - Penultimate element
+(assert
+ (= ((comp second reverse) (list 1 2 3 4 5)) 4))
+
+(assert
+ (= ((comp first #(drop (- (count %1) 2) %1)) (list 1 2 3 4 5)) 4))
+
+;35 - Local bindings
+(assert
+ (= 7 (let [x 5] (+ 2 x))))
+
+;36 - Let it be
+(assert
+ (= 10 (let [x 7 y 3 z 1] (+ x y))))
+
+(assert
+ (= 4 (let [x 7 y 3 z 1] (+ y z))))
+
+(assert
+ (= 1 (let [x 7 y 3 z 1] z)))
