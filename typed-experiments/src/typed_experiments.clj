@@ -1,5 +1,5 @@
 (ns typed-experiments
-  (:import (clojure.lang IPersistentVector IPersistentList))
+  (:import (clojure.lang IPersistentVector IPersistentList ISeq IPersistentCollection IPersistentMap Keyword IMapEntry))
   (:require [clojure.core.typed :as typed]))
 
 ;(def unannotated-inc (fn [x] (+ x 1)))
@@ -23,7 +23,7 @@
 
 
 ; get the type of a pre-annotated var by cf'ing the form, eg:
-;(typed/cf println) ; (Fn [Any * -> nil])
+;(typed/cf println) ; => (Fn [Any * -> nil])
 ;(typed/cf map); =>
 ;  (All [c a b1918 ...]
 ;       (Fn
@@ -67,12 +67,57 @@
 (defn dodgy [x] (str x)) ;actually returns String
 
 (typed/ann naive [ -> boolean])
-(defn naive [] (> (dodgy 2) 3)) ;boom!
+(defn naive [] (> (dodgy 2) 3)) ; boom! and yet it type-checks
+
+
+;(typed/cf [1 2 3] ; => [(HVec [(Value 1) (Value 2) (Value 3)]) {:then tt, :else ff}]
+(typed/ann ok7 (IPersistentVector Number)) ; ok
+;(typed/ann ok7 (IPersistentVector Integer)) ; ok
+;(typed/ann ok7 (typed/Vec Integer)) ; ok - Vec is an alias for IPersistentVector
+;(typed/ann ok7 (IPersistentCollection Number)) ; ok - Vectors are Collections
+;(typed/ann ok7 (IPersistentList Number)) ; not okay - Vectors are not Lists
+;(typed/ann ok7 (ISeq Number)) ; not ok - Vector is not an ISeq? Interesting!
+;(typed/ann ok7 (typed/Seqable Number)) ; ok - Vector can have seq called upon it
+;(typed/ann ok7 java.lang.Iterable) ; ok - Vector is an Iterable, but interesting that it doesn't take type args
+;(typed/ann ok7 (HVec [Number Number])) ; not ok - wrong number of elements
+;(typed/ann ok7 (HVec [Integer Number typed/Int])) ; ok - 1,2,3 are subtypes of all of these types...
+;(typed/ann ok7 (HVec [Number Number (Value 3)])) ; ok - ...as well as the singleton type (Value x)
+;(typed/ann ok7 (HVec [Number Number (Value 4)])) ; not ok - wrong singleton value
+(def ok7 [1 2 3])
+
+
+; use of HVec - needs some more thought
+(typed/ann a-generator [ -> (typed/Seqable (typed/Option Number))])
+(defn a-generator []
+    ; some interesting stuff goes on, and then returns a tuple
+    [1 2 3])
+
+(typed/ann consumes-a-generator [ -> nil])
+(defn consumes-a-generator []
+  (let [some-values (a-generator)
+        ; some interesting stuff goes on...
+        ; ... then make use of the tuple
+
+        ; imagine we were using the three values in a tightly controlled manner, ie.
+        ; we need all three, and need to know they're numbers, so we'll fake that with...
+        foo (first some-values)
+        bar (second some-values)
+        baz (nth some-values 2)
+        ]
+    (println foo bar baz)))
 
 
 
-;(typed/ann ok4 (typed/Vec Number)); ok
-;(typed/ann ok4 (typed/List Number))
-;(def ok4 [1 2 3])
-
-
+; map
+(typed/ann my-map (typed/Seq String))
+;(defn map [] (map str '(1 2 3))) ; ok - simple list input
+;(defn map [] (map str {:a "a" :b "b"})) ; ok - treats the pair as an aggregate
+(typed/ann f [(typed/Seq Any) -> String])
+(defn f [[k v ]] (str k v))
+(typed/ann m (typed/Map Keyword String))
+(def m {:a "a" :b "b"})
+(typed/ann ms (typed/Option (typed/NonEmptySeq (U (IMapEntry Keyword String) (HVec [Keyword String])))))
+(def ms (seq m))
+;(typed/ann mp (typed/Seq (HVec [Keyword String])))
+;(def mp ((typed/inst seq (HVec [Keyword String])) m))
+(def my-map ((typed/inst map String (typed/Seq Any)) f ms))
