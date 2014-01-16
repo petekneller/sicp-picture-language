@@ -144,3 +144,27 @@
 
 (assert
  (= 1 (let [x 7 y 3 z 1] z)))
+
+;37 - Regular Expressions
+(assert
+ (= "ABC" (apply str (re-seq #"[A-Z]+" "bA1B3Ce "))))
+
+;64 - Intro to reduce
+(assert
+ (= 15 (reduce + [1 2 3 4 5])))
+
+(assert
+ (= 0 (reduce + [])))
+
+(assert
+ (= 6 (reduce + 1 [2 3])))
+
+;57 - simple recursion
+(assert
+ (= '(5 4 3 2 1) ((fn foo [x] (when (> x 0) (conj (foo (dec x)) x))) 5))) ; how the f*&k does this work?
+
+;71 - rearranging code: ->
+(assert
+ (= (last (sort (rest (reverse [2 5 4 1 3 6]))))
+   (-> [2 5 4 1 3 6] (reverse) (rest) (sort) (last))
+   5))
