@@ -109,15 +109,27 @@
 
 
 ; map
-(typed/ann my-map (typed/Seq String))
-;(defn map [] (map str '(1 2 3))) ; ok - simple list input
-;(defn map [] (map str {:a "a" :b "b"})) ; ok - treats the pair as an aggregate
-(typed/ann f [(typed/Seq Any) -> String])
-(defn f [[k v ]] (str k v))
 (typed/ann m (typed/Map Keyword String))
 (def m {:a "a" :b "b"})
-(typed/ann ms (typed/Option (typed/NonEmptySeq (U (IMapEntry Keyword String) (HVec [Keyword String])))))
-(def ms (seq m))
+
+; failed first experiments - before posting to google groups
+;(typed/ann f [(typed/Seq Any) -> String])
+;(defn f [[k v ]] (str k v))
+;(typed/ann ms (typed/Option (typed/NonEmptySeq (U (IMapEntry Keyword String) (HVec [Keyword String])))))
+;(def ms (seq m))
 ;(typed/ann mp (typed/Seq (HVec [Keyword String])))
 ;(def mp ((typed/inst seq (HVec [Keyword String])) m))
-(def my-map ((typed/inst map String (typed/Seq Any)) f ms))
+;(typed/ann my-map (typed/Seq String))
+;(def my-map ((typed/inst map String (typed/Seq Any)) f ms))
+
+(typed/ann ambrose-f [(typed/Seqable Any) -> String]) ; this is the trick - a HVec is a Seqable, but not a Seq
+(defn ambrose-f [[k v]] (str k v))
+(typed/ann ambrose-result [ -> Any])
+(defn ambrose-result [] (map ambrose-f m))
+
+; proof
+;(typed/ann hvec1 [ -> (typed/Vec Any)]) ; ok of course
+;(typed/ann hvec1 [ -> (typed/Seq Any)]) ; not ok
+(typed/ann hvec1 [ -> (typed/Seqable Any)]) ; ok
+(defn hvec1 [] [1 2 3])
+
