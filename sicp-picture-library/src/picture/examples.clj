@@ -6,10 +6,6 @@
 (defn draw-roger [gfx destRect]
   (swing/draw-image gfx
               (io/resource "roger.gif")
-              ; src
-              { :top-left {:x 0 :y 0}
-                :bot-right {:x 180 :y 180}}
-              ; dest
               destRect))
 
 (defn basic-paint [gfx]
