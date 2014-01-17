@@ -14,11 +14,13 @@
         y2 (* y-scale (:y point))]
     {:x x2 :y y2}))
 
+
 (defn draw-line [from to]
   "from and to are coords specified in 'user' space, which begins at the top-left
   and extends to 1000 in both axes"
   (fn [gfx]
     (.drawLine gfx (:x from) (:y from) (:x to) (:y to))))
+
 
 (defn draw-image [^URL res destRect]
   "the corners of destRect are coords specified in 'user' space, which begins at the top-left
@@ -35,6 +37,13 @@
                   nil))))
 
 
+(defn followed-by [first second]
+  (fn [gfx]
+    (do
+      (first gfx)
+      (second gfx))))
+
+
 (defn new-jpanel [on-paint]
   " on-paint: gfx -> nil"
   (let [panel (proxy [JPanel] []
@@ -48,18 +57,19 @@
       (.setBorder panel (BorderFactory/createLineBorder Color/black))
       panel)))
 
+
 (defn serialise-rendering [render-cmds]
   (fn [gfx]
     (println (map #(do (% gfx) (println %)) render-cmds))))
 
 
-(defn swing-main [render-cmds]
+(defn swing-main [renderer]
   "render-cmds: seq of render commands, where a render command is Graphics -> nil"
   (SwingUtilities/invokeLater
     #(let [frame (new JFrame)]
       (do
         (.setDefaultCloseOperation frame JFrame/EXIT_ON_CLOSE)
-        (.add frame (new-jpanel (serialise-rendering render-cmds)))
+        (.add frame (new-jpanel renderer))
         (.pack frame)
         (.setVisible frame true)
         (println (str "Created GUI on EDT? " (SwingUtilities/isEventDispatchThread)))

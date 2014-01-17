@@ -5,4 +5,4 @@
 
 
 (defn -main [& args]
-  (swing/swing-main eg/basic-paint))
+  (swing/swing-main eg/basic-picture))
