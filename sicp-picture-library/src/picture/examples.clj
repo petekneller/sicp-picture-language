@@ -3,15 +3,11 @@
   (:require [clojure.java.io :as io]
             [picture.swing :as swing]))
 
-(defn draw-roger [gfx destRect]
-  (swing/draw-image gfx
-              (io/resource "roger.gif")
-              destRect))
+(defn draw-roger [destRect]
+  (swing/draw-image (io/resource "roger.gif") destRect))
 
-(defn basic-paint [gfx]
-  (do
-    ;(.drawString gfx "this is my custom panel!" 10 20)
-    (.setColor gfx Color/BLACK)
-    (swing/draw-line gfx {:x 10 :y 10} {:x 100 :y 30})
-    (draw-roger gfx { :top-left {:x 50 :y 50}
-                      :bot-right {:x 400 :y 400}})))
+(def basic-paint
+  (list
+    (swing/draw-line {:x 10 :y 10} {:x 100 :y 30})
+    (draw-roger {:top-left  {:x 50 :y 50}
+                 :bot-right {:x 400 :y 400}})))
