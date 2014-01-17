@@ -2,4 +2,4 @@
   (:require [clojure.test :as t]))
 
 (t/deftest basic-run
-  (t/is (true true)))
+  (t/is (= true true)))

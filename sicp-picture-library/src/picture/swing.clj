@@ -6,8 +6,12 @@
   (:require [clojure.java.io :as io]))
 
 ; TODO remove 'point' from the name and use multimethods for both this and the future 'rect' one?
-; TODO move panel extents to beginning of args so can be partially applied?
-(defn map-point-user-to-panel-space [point panel-width panel-height] nil)
+(defn map-point-user-to-panel-space [panel-width panel-height point]
+  (let [x-scale (/ panel-width 1000)
+        y-scale (/ panel-height 1000)
+        x2 (* x-scale (:x point))
+        y2 (* y-scale (:y point))]
+    {:x x2 :y y2}))
 
 (defn draw-line [gfx from to]
   "from and to are coords specified in 'user' space, which begins at the top-left
