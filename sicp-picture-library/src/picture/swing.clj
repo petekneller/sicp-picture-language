@@ -37,11 +37,17 @@
                   nil))))
 
 
-(defn followed-by [first second]
+(defn followed-by [first-renderer second-renderer]
+  "creates a renderer that sequences its two arguments one after the other"
   (fn [gfx]
     (do
-      (first gfx)
-      (second gfx))))
+      (first-renderer gfx)
+      (second-renderer gfx))))
+
+
+(defn do-renderers [& renderers]
+  (fn [gfx]
+    (doall (map #(% gfx) renderers))))
 
 
 (defn new-jpanel [on-paint]
