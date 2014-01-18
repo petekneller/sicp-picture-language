@@ -8,6 +8,8 @@
 
 (def basic-picture
   (swing/do-renderers
-      (swing/draw-line {:x 10 :y 10} {:x 100 :y 30})
+      (swing/draw-line {:x 0 :y 100} {:x 150 :y 350})
+      (swing/draw-line {:x 150 :y 350} {:x 300 :y 300})
+      (swing/draw-line {:x 300 :y 300} {:x 350 :y 300})
       (draw-roger {:top-left  {:x 50 :y 50}
                  :bot-right {:x 400 :y 400}})))
