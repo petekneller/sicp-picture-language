@@ -53,21 +53,13 @@
                   nil))))
 
 
-(defn followed-by [first-renderer second-renderer]
-  "creates a renderer that sequences its two arguments one after the other"
-  (fn [gfx panel-width panel-height]
-    (do
-      (first-renderer gfx panel-width panel-height)
-      (second-renderer gfx panel-width panel-height))))
-
-
 (defn do-renderers [& renderers]
   (fn [gfx panel-width panel-height]
     (doall (map #(% gfx panel-width panel-height) renderers))))
 
 
 (defn new-jpanel [on-paint]
-  " on-paint: gfx -> nil"
+  "on-paint: gfx -> nil"
   (let [panel-width 500
         panel-height 500
         panel (proxy [JPanel] []
@@ -80,11 +72,6 @@
     (do
       (.setBorder panel (BorderFactory/createLineBorder Color/black))
       panel)))
-
-
-(defn serialise-rendering [render-cmds]
-  (fn [gfx]
-    (println (map #(do (% gfx) (println %)) render-cmds))))
 
 
 (defn swing-main [renderer]
