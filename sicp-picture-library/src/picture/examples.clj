@@ -3,13 +3,14 @@
   (:require [clojure.java.io :as io]
             [picture.vector :as vector]
             [picture.frame :as frame]
+            [picture.painter :as painter]
             [picture.swing :as swing]))
 
 (def roger
   (swing/draw-image (io/resource "roger.gif") (frame/make-frame {:x 50 :y 50} 800 800)))
 
 (def wave
-  (swing/do-renderers
+  (painter/do-renderers
     (swing/draw-polyline {:x 0 :y 100}
                          {:x 150 :y 350}
                          {:x 300 :y 300}

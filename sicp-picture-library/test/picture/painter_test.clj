@@ -1,5 +1,5 @@
-(ns picture.swing-test
-  (:use [picture.swing]
+(ns picture.painter_test
+  (:use [picture.painter]
         [picture.vector]
         [picture.frame]
         [midje.sweet]))

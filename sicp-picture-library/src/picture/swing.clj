@@ -5,22 +5,15 @@
            [java.net URL])
   (:require [clojure.java.io :as io]
             [picture.vector :as vector]
-            [picture.frame :as frame]))
-
-
-(defn map-point-user-to-panel-space [frame point]
-  (let [x-scale (/ (frame/frame-width frame) 1000)
-        y-scale (/ (frame/frame-height frame) 1000)
-        scaled-point (vector/scale-vector point x-scale y-scale)
-        translated-point (vector/add-vectors (frame/frame-origin frame) scaled-point)]
-    translated-point))
+            [picture.frame :as frame]
+            [picture.painter :as painter]))
 
 
 (defn draw-line [from to]
   "from and to are coords specified in 'user' space, which begins at the top-left
   and extends to 1000 in both axes"
   (fn [gfx panel-rect]
-    (let [to-panel (partial map-point-user-to-panel-space panel-rect)
+    (let [to-panel (partial painter/map-point-user-to-panel-space panel-rect)
           panel-from (to-panel from)
           panel-to (to-panel to)]
       (.drawLine gfx (:x panel-from) (:y panel-from) (:x panel-to) (:y panel-to)))))
@@ -30,7 +23,7 @@
   "coords specified in 'user' space, which begins at the top-left
   and extends to 1000 in both axes"
   (fn [gfx panel-rect]
-    (let [to-panel-points (map #(map-point-user-to-panel-space panel-rect %) points)
+    (let [to-panel-points (map #(painter/map-point-user-to-panel-space panel-rect %) points)
           xs (map :x to-panel-points)
           ys (map :y to-panel-points)]
       (.drawPolyline gfx (int-array xs) (int-array ys) (count to-panel-points)))))
@@ -41,7 +34,7 @@
   and extends to 1000 in both axes"
   (fn [gfx panel-rect]
     (let [image (ImageIO/read res)
-          to-panel (partial map-point-user-to-panel-space panel-rect)
+          to-panel (partial painter/map-point-user-to-panel-space panel-rect)
           panel-top-left (to-panel (frame/frame-origin destRect))
           panel-bot-right (to-panel (frame/frame-bot-right destRect))]
       (.drawImage gfx
@@ -52,11 +45,6 @@
                   ; src rect in image
                   0 0 (.getWidth image) (.getHeight image)
                   nil))))
-
-
-(defn do-renderers [& renderers]
-  (fn [gfx panel-rect]
-    (doall (map #(% gfx panel-rect) renderers))))
 
 
 (defn new-jpanel [on-paint]
