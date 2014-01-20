@@ -1,10 +1,11 @@
 (ns picture.examples
   (:import [java.awt Color])
   (:require [clojure.java.io :as io]
-            [picture.swing :as swing]))
+            [picture.swing :as swing]
+            [picture.vector :as vector]))
 
 (def roger
-  (swing/draw-image (io/resource "roger.gif") {:top-left {:x 0 :y 0} :bot-right {:x 1000 :y 1000}}))
+  (swing/draw-image (io/resource "roger.gif") (swing/make-frame vector/origin 1000 1000)))
 
 (def wave
   (swing/do-renderers
