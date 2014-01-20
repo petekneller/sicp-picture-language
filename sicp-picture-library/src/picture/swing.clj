@@ -78,7 +78,7 @@
                   (do (proxy-super paintComponent gfx)
                       (.setColor gfx Color/BLACK)
                       ;(.drawString gfx "this is my custom panel!" 10 20)
-                      (on-paint gfx {:top-left vector/origin :bot-right {:x panel-width :y panel-height} }))))]
+                      (on-paint gfx (make-frame vector/origin panel-width)))))]
     (do
       (.setBorder panel (BorderFactory/createLineBorder Color/black))
       panel)))
