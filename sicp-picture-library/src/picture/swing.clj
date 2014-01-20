@@ -4,25 +4,16 @@
            [javax.imageio ImageIO]
            [java.net URL])
   (:require [clojure.java.io :as io]
-            [picture.vector :as vector]))
-
-
-(defn make-frame [frame-origin width height]
-  {:top-left frame-origin :bot-right {:x width :y height}})
-
-(defn frame-width [frame] (:x (:bot-right frame)))
-
-(defn frame-height [frame] (:y (:bot-right frame)))
-
-(defn frame-origin [frame] (:top-left frame))
+            [picture.vector :as vector]
+            [picture.frame :as frame]))
 
 
 (defn map-point-user-to-panel-space [frame point]
-  (let [x-scale (/ (frame-width frame) 1000)
-        y-scale (/ (frame-height frame) 1000)
-        x2 (+ (:x (frame-origin frame)) (* x-scale (:x point)))
-        y2 (+ (:y (frame-origin frame)) (* y-scale (:y point)))]
-    {:x x2 :y y2}))
+  (let [x-scale (/ (frame/frame-width frame) 1000)
+        y-scale (/ (frame/frame-height frame) 1000)
+        scaled-point (vector/scale-vector point x-scale y-scale)
+        translated-point (vector/add-vectors (frame/frame-origin frame) scaled-point)]
+    translated-point))
 
 
 (defn draw-line [from to]
@@ -51,13 +42,13 @@
   (fn [gfx panel-rect]
     (let [image (ImageIO/read res)
           to-panel (partial map-point-user-to-panel-space panel-rect)
-          top-left (to-panel (:top-left destRect))
-          bot-right (to-panel (:bot-right destRect))]
+          panel-top-left (to-panel (frame/frame-origin destRect))
+          panel-bot-right (to-panel (frame/frame-bot-right destRect))]
       (.drawImage gfx
                   image
                   ; dest rect on panel
-                  (:x top-left) (:y top-left)
-                  (:x bot-right) (:y bot-right)
+                  (:x panel-top-left) (:y panel-top-left)
+                  (:x panel-bot-right) (:y panel-bot-right)
                   ; src rect in image
                   0 0 (.getWidth image) (.getHeight image)
                   nil))))
@@ -78,7 +69,7 @@
                   (do (proxy-super paintComponent gfx)
                       (.setColor gfx Color/BLACK)
                       ;(.drawString gfx "this is my custom panel!" 10 20)
-                      (on-paint gfx (make-frame vector/origin panel-width)))))]
+                      (on-paint gfx (frame/make-frame vector/origin panel-width panel-height)))))]
     (do
       (.setBorder panel (BorderFactory/createLineBorder Color/black))
       panel)))

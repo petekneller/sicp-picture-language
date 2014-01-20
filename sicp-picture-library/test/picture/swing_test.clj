@@ -1,7 +1,9 @@
 (ns picture.swing-test
   (:use [picture.swing]
         [picture.vector]
+        [picture.frame]
         [midje.sweet]))
+
 
 (facts "map-point-user-to-panel-space can scale its input"
        (let [map-fn (partial map-point-user-to-panel-space (make-frame origin 200 200))]
