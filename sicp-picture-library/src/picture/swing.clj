@@ -12,8 +12,8 @@
 (defn draw-line [from to]
   "from and to are coords specified in 'user' space, which begins at the top-left
   and extends to 1000 in both axes"
-  (fn [gfx panel-rect]
-    (let [to-panel (partial painter/map-point-user-to-panel-space panel-rect)
+  (fn [gfx dest-frame]
+    (let [to-panel (partial painter/map-point-user-to-frame-space dest-frame)
           panel-from (to-panel from)
           panel-to (to-panel to)]
       (.drawLine gfx (:x panel-from) (:y panel-from) (:x panel-to) (:y panel-to)))))
@@ -22,21 +22,21 @@
 (defn draw-polyline [& points]
   "coords specified in 'user' space, which begins at the top-left
   and extends to 1000 in both axes"
-  (fn [gfx panel-rect]
-    (let [to-panel-points (map #(painter/map-point-user-to-panel-space panel-rect %) points)
+  (fn [gfx dest-frame]
+    (let [to-panel-points (map #(painter/map-point-user-to-frame-space dest-frame %) points)
           xs (map :x to-panel-points)
           ys (map :y to-panel-points)]
       (.drawPolyline gfx (int-array xs) (int-array ys) (count to-panel-points)))))
 
 
-(defn draw-image [^URL res destRect]
+(defn draw-image [^URL res dest-rect]
   "the corners of destRect are coords specified in 'user' space, which begins at the top-left
   and extends to 1000 in both axes"
-  (fn [gfx panel-rect]
+  (fn [gfx dest-frame]
     (let [image (ImageIO/read res)
-          to-panel (partial painter/map-point-user-to-panel-space panel-rect)
-          panel-top-left (to-panel (frame/frame-origin destRect))
-          panel-bot-right (to-panel (frame/frame-bot-right destRect))]
+          to-panel (partial painter/map-point-user-to-frame-space dest-frame)
+          panel-top-left (to-panel (frame/frame-origin dest-rect))
+          panel-bot-right (to-panel (frame/frame-bot-right dest-rect))]
       (.drawImage gfx
                   image
                   ; dest rect on panel

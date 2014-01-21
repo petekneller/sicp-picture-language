@@ -17,6 +17,8 @@
 (defn frame-y-axis [frame]
   {:x 0 :y (:height frame)})
 
+(def frame-top-left frame-origin)
+
 (defn frame-bot-right [frame]
   (let [origin (:origin frame)
         x-axis {:x (:width frame) :y 0}
@@ -24,5 +26,12 @@
     (-> origin
         (vector/add-vectors x-axis)
         (vector/add-vectors y-axis))))
+
+(def frame-bound frame-bot-right)
+
+(defn invert-frame [frame]
+  (let [new-origin (vector/add-vectors (:origin frame) (frame-y-axis frame))
+        inverted-height (* -1 (:height frame))]
+    (make-frame new-origin (:width frame) inverted-height)))
 
 
