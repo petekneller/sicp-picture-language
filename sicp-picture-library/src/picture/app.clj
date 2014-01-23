@@ -5,4 +5,4 @@
 
 
 (defn -main [& args]
-  (swing/swing-main eg/right-split-wave))
+  (swing/swing-main eg/corner-split))

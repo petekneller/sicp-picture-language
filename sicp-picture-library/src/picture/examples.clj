@@ -7,7 +7,7 @@
             [picture.swing :as swing]))
 
 (def roger
-  (swing/draw-image (io/resource "roger.gif") (frame/make-frame {:x 50 :y 50} 800 800)))
+  (swing/draw-image (io/resource "roger.gif") (frame/make-frame {:x 50 :y 50} 1000 1000)))
 
 (def wave
   (painter/do-painters
@@ -39,4 +39,8 @@
 
 (def wave4 (painter/flipped-pairs wave))
 
-(def right-split-wave (painter/right-split wave 4))
+(def right-split (painter/right-split wave 4))
+
+(def up-split (painter/up-split wave 4))
+
+(def corner-split (painter/corner-split roger 4))

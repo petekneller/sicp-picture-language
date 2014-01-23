@@ -46,3 +46,16 @@
     painter
     (let [smaller (right-split painter (- n 1))]
       (beside painter (below smaller smaller)))))
+
+(defn up-split [painter n]
+  (if (= 0 n)
+    painter
+    (let [smaller (up-split painter (- n 1))]
+      (below (beside smaller smaller) painter))))
+
+(defn corner-split [painter n]
+  (if (= 0 n)
+    painter
+    (below 
+     (beside (up-split painter (- n 1)) (corner-split painter (- n 1)))
+     (beside painter (right-split painter (- n 1))))))
