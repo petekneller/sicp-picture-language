@@ -38,3 +38,5 @@
 (def wave2 (painter/beside wave (painter/flip-vert wave)))
 
 (def wave4 (painter/flipped-pairs wave))
+
+(def right-split-wave (painter/right-split wave 4))

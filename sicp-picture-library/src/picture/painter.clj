@@ -40,3 +40,9 @@
 (defn flipped-pairs [painter]
   (let [painter2 (beside painter (flip-vert painter))]
     (below painter2 painter2)))
+
+(defn right-split [painter n]
+  (if (= 0 n)
+    painter
+    (let [smaller (right-split painter (- n 1))]
+      (beside painter (below smaller smaller)))))
