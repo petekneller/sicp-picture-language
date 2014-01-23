@@ -34,4 +34,19 @@
         inverted-height (* -1 (:height frame))]
     (make-frame new-origin (:width frame) inverted-height)))
 
+(defn scale-frame 
+  ([frame scaling-factor]
+     (scale-frame frame scaling-factor scaling-factor))
+  ([frame x-factor y-factor]
+     (let [new-width (* x-factor (frame-width frame))
+           new-height (* y-factor (frame-height frame))]
+       (make-frame (frame-origin frame) new-width new-height))))
+
+(defn translate-frame 
+  ([frame translation-v]
+     (let [new-origin (vector/add-vectors (frame-origin frame) translation-v)]
+       (make-frame new-origin (frame-width frame) (frame-height frame))))
+  ([frame x-offset y-offset]
+     (translate-frame frame {:x x-offset :y y-offset})))
+
 
