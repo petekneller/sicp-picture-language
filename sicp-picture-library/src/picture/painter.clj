@@ -19,6 +19,10 @@
   (fn [gfx dest-frame]
     (painter gfx (frame/invert-frame dest-frame))))
 
+(defn flip-horiz [painter]
+  (fn [gfx dest-frame]
+    (painter gfx (frame/mirror-frame dest-frame))))
+
 (defn beside [painter1 painter2]
   (fn [gfx dest-frame]
     (let [left-frame (frame/scale-frame dest-frame 0.5 1)
@@ -56,6 +60,16 @@
 (defn corner-split [painter n]
   (if (= 0 n)
     painter
-    (below 
-     (beside (up-split painter (- n 1)) (corner-split painter (- n 1)))
-     (beside painter (right-split painter (- n 1))))))
+    (let [up-splits (up-split painter (- n 1))
+          top-left (beside up-splits up-splits)
+          top-right (corner-split painter (- n 1))
+          right-splits (right-split painter (- n 1))
+          bot-right (below right-splits right-splits)]
+      (below
+        (beside top-left top-right)
+        (beside painter bot-right)))))
+
+(defn square-limit [painter n]
+  (let [quarter (corner-split painter n)
+        half (beside (flip-horiz quarter) quarter)]
+    (below half (flip-vert half))))

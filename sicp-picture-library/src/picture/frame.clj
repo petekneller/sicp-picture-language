@@ -34,6 +34,10 @@
         inverted-height (* -1 (:height frame))]
     (make-frame new-origin (:width frame) inverted-height)))
 
+(defn mirror-frame [frame]
+  (let [new-origin (vector/add-vectors (frame-origin frame) (frame-x-axis frame))]
+    (make-frame new-origin (* -1 (frame-width frame)) (frame-height frame))))
+
 (defn scale-frame 
   ([frame scaling-factor]
      (scale-frame frame scaling-factor scaling-factor))

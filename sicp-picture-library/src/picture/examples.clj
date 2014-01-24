@@ -7,7 +7,7 @@
             [picture.swing :as swing]))
 
 (def roger
-  (swing/draw-image (io/resource "roger.gif") (frame/make-frame {:x 50 :y 50} 1000 1000)))
+  (swing/draw-image (io/resource "roger.gif") (frame/make-frame {:x 0 :y 0} 1000 1000)))
 
 (def wave
   (painter/do-painters
